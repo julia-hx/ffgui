@@ -2,9 +2,7 @@ mod app;
 mod commands;
 
 use app::FfGuiApp;
-
-use egui::widgets::{Button, Label};
-use eframe::{egui, epaint::Vec2};
+use eframe;
 
 fn main() -> Result<(), eframe::Error> {
     let options = eframe::NativeOptions {

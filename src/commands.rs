@@ -24,13 +24,7 @@ pub enum Quality {
 	Low
 }
 
-#[derive(Clone, Copy, Debug, Default)]
-pub struct ToMp3Arguments {
-	pub constant_bitrate: bool,
-	pub quality: Quality,
-}
-
-pub fn to_mp3(input_file_path: &String, args: ToMp3Arguments) {
+pub fn to_mp3(input_file_path: &String, quality: Quality) {
 	let mut cmd = Command::new("ffmpeg");
 	
 	// trim and split the string, iterate all segments just in case we get a source path with a bad.naming.convention somewhere.
@@ -42,21 +36,33 @@ pub fn to_mp3(input_file_path: &String, args: ToMp3Arguments) {
 	let mut i = 0;
 	for segment in e {
 		if i < size - 1 {
-			output_path = output_path.to_owned() + segment.1 + ".";
+			output_path = output_path.to_owned() + segment.1;
 		}
 		i = i+1;
 	}
-	output_path = output_path.to_owned() + "mp3";
 
-	let bitrate_flag = if args.constant_bitrate { "-b:a" } else { "-q:a" };
-	let mut quality = "";
-	if args.constant_bitrate {
-		quality = match args.quality {
-			Quality::High => if args.constant_bitrate { "320k" } else { "0" },
-			Quality::Medium => "4",
-			Quality::Low => "8", 
+	let mut version:usize = 0;
+	loop {
+		let out = format!(
+			"{}{}",
+			output_path,
+			if version == 0 {"".to_string()} else {version.to_string()}
+		);
+		if std::fs::exists(out.to_owned() + ".mp3").unwrap() {
+			version = version + 1;
+		} else {
+			output_path = out.to_owned() + ".mp3";
+			break;
 		}
 	}
+	
+	// let bitrate_flag = if args.constant_bitrate { "-b:a" } else { "-q:a" };
+	let bitrate_flag = "-b:a";
+	let quality = match quality {
+		Quality::High => "320k",
+		Quality::Medium => "128k",
+		Quality::Low => "64k", 
+	};
 
 	cmd.args(["-i", input_file_path, bitrate_flag, quality, &output_path]);
 	let output = cmd.output().expect("could not run command!");

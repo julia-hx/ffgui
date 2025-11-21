@@ -6,7 +6,6 @@ use egui_file_dialog::FileDialog;
 use crate::commands::{
 	CommandType, 
 	to_mp3, 
-	ToMp3Arguments, 
 	Quality
 };
 
@@ -20,7 +19,7 @@ pub struct FfGuiApp {
 	source_path: Option<PathBuf>,
 
 	command: CommandType,
-	mp3_args: ToMp3Arguments,
+	quality: Quality,
 }
 
 impl Default for FfGuiApp {
@@ -35,7 +34,7 @@ impl Default for FfGuiApp {
 			source_path: None,
 
 			command: CommandType::ToMp3,
-			mp3_args: ToMp3Arguments::default(),
+			quality: Quality::default(),
         }
     }
 }
@@ -47,14 +46,14 @@ impl eframe::App for FfGuiApp {
 			ui.weak("");
 
 			// picker
-			ui.strong("Select source:");
+			ui.strong("Select source");
 			ui.horizontal(|ui| {
-				if ui.button("Open Source File").clicked() {
+				if ui.button("File").clicked() {
 					self.file_dialog.pick_file();
 					self.picking_file = true;
 					self.picking_directory = false;
 				}
-				if ui.button("Select Source Folder").clicked() {
+				if ui.button("Folder").clicked() {
 					self.file_dialog.pick_directory();
 					self.picking_directory = true;
 					self.picking_file = false;
@@ -77,14 +76,40 @@ impl eframe::App for FfGuiApp {
 				}
             }
 
-			if self.source_file_picked {
+			// if we have picked something:
+			if self.source_file_picked || self.source_directory_picked {
 				let path_string = self.source_path.clone().expect("no valid path").into_os_string().into_string().unwrap();
-				ui.strong("Source File:");
-				ui.weak(format!("{}", path_string));
+				if self.source_file_picked {
+					ui.strong("Source File");
+					ui.weak(format!("{}", path_string));
+				} else if self.source_directory_picked {
+					// TODO: collect file paths in folder
+					let paths = std::fs::read_dir(&path_string).unwrap();
+					let mut total_rows = 0;
+					for path in paths {
+						// get strings into separate collection?
+					}
 
-				ui.strong("Command to run:");
+					
+					let text_style = egui::TextStyle::Body;
+					let row_height = ui.text_style_height(&text_style);
+					let total_rows = 100;
+					ui.strong("Files in Source Folder");
+					egui::ScrollArea::vertical()
+						.max_height(120.0)
+						.max_width(200.0)
+						.scroll_bar_visibility(egui::scroll_area::ScrollBarVisibility::AlwaysVisible)
+						.show_rows(ui, row_height, total_rows, |ui, row_range| {
+							for n in row_range {
+								ui.label(format!("this_is_item_number_{}", n));
+							}
+						}
+					);
+				}
+				
+				ui.strong("Command config");
 				let mut current_command = self.command;
-				egui::ComboBox::from_id_salt(1)
+				egui::ComboBox::from_label("Command")
 					.selected_text(format!("{:?}", current_command))
 					.show_ui(ui, |ui| {
 						ui.selectable_value(&mut current_command, CommandType::ToMp3, "To Mp3");
@@ -95,10 +120,8 @@ impl eframe::App for FfGuiApp {
 				);
 				if self.command != current_command { self.command = current_command; }	
 
-				ui.strong("Command config:");
 				if self.command == CommandType::ToMp3 {
-					ui.checkbox(&mut self.mp3_args.constant_bitrate, "Constant bitrate");
-					let mut q = self.mp3_args.quality;
+					let mut q = self.quality;
 					egui::ComboBox::from_label("Quality")
 						.selected_text(format!("{:?}", q))
 						.show_ui(ui, |ui| {
@@ -107,16 +130,28 @@ impl eframe::App for FfGuiApp {
 							ui.selectable_value(&mut q, Quality::Low, "Low");
 						}
 					);
-					if self.mp3_args.quality != q { self.mp3_args.quality = q; }
+					if self.quality != q { self.quality = q; }
 				}
 				
-				ui.strong("Run command:");
+				ui.strong("Run");
+				
 				if ui.button("Go!").clicked() {
-					match self.command {
-						CommandType::ToMp3  => { to_mp3(&path_string, self.mp3_args); },
-						CommandType::ToWav => {},
-						CommandType::ResizeVideo => {},
-						CommandType::CropVideo => {},
+					if self.source_file_picked {
+						match self.command {
+							CommandType::ToMp3  => { to_mp3(&path_string, self.quality); },
+							CommandType::ToWav => {},
+							CommandType::ResizeVideo => {},
+							CommandType::CropVideo => {},
+						}
+					}
+					else if self.source_directory_picked {
+						// TODO: iterate over paths in folder
+						match self.command {
+							CommandType::ToMp3  => { to_mp3(&path_string, self.quality); },
+							CommandType::ToWav => {},
+							CommandType::ResizeVideo => {},
+							CommandType::CropVideo => {},
+						}
 					}
 				}
 			}
