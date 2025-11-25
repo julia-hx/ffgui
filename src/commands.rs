@@ -1,4 +1,5 @@
 use std::process::Command;
+use std::path::PathBuf;
 
 pub fn test_command(arg: &String) {
 	let mut cmd = Command::new("code");
@@ -19,16 +20,20 @@ pub enum CommandType {
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub enum Quality {
-	#[default] High,
-	Medium,
-	Low
+	High,
+	#[default]Medium,
+	Low,
+	Broken
 }
 
-pub fn to_mp3(input_file_path: &String, quality: Quality) {
+pub fn to_mp3(input_file_path: &Option<PathBuf>, quality: Quality) {
 	let mut cmd = Command::new("ffmpeg");
+	// TODO: there should be neat ways of doing all of the below using PathBuf instead of working on a String.
 	
+	// to string
+	let path_string = input_file_path.clone().expect("no valid path").into_os_string().into_string().unwrap();
 	// trim and split the string, iterate all segments just in case we get a source path with a bad.naming.convention somewhere.
-	let trimmed_path = input_file_path.trim();
+	let trimmed_path = path_string.trim();
 	let split_path = trimmed_path.split('.');
 	let e = split_path.enumerate();
 	let size = &e.clone().count();
@@ -46,7 +51,7 @@ pub fn to_mp3(input_file_path: &String, quality: Quality) {
 		let out = format!(
 			"{}{}",
 			output_path,
-			if version == 0 {"".to_string()} else {version.to_string()}
+			if version == 0 {"".to_string()} else {"_".to_owned() + &version.to_string()}
 		);
 		if std::fs::exists(out.to_owned() + ".mp3").unwrap() {
 			version = version + 1;
@@ -55,16 +60,20 @@ pub fn to_mp3(input_file_path: &String, quality: Quality) {
 			break;
 		}
 	}
-	
+
+	// output_path = output_path + ".mp3";
+	//output_path = String::from("output.mp3");
+
 	// let bitrate_flag = if args.constant_bitrate { "-b:a" } else { "-q:a" };
 	let bitrate_flag = "-b:a";
 	let quality = match quality {
 		Quality::High => "320k",
 		Quality::Medium => "128k",
-		Quality::Low => "64k", 
+		Quality::Low => "64k",
+		Quality::Broken => "32k", 
 	};
 
-	cmd.args(["-i", input_file_path, bitrate_flag, quality, &output_path]);
+	cmd.args(["-i", &path_string, bitrate_flag, quality, &output_path]);
 	let output = cmd.output().expect("could not run command!");
 
 	println!("status: {}", output.status);

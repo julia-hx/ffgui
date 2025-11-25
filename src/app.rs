@@ -80,7 +80,7 @@ impl eframe::App for FfGuiApp {
 			if self.source_file_picked || self.source_directory_picked {
 				let path_string = self.source_path.clone().expect("no valid path").into_os_string().into_string().unwrap();
 				if self.source_file_picked {
-					ui.strong("Source File");
+					ui.strong("Source file");
 					ui.weak(format!("{}", path_string));
 				} else if self.source_directory_picked {
 					// TODO: collect file paths in folder
@@ -94,7 +94,7 @@ impl eframe::App for FfGuiApp {
 					let text_style = egui::TextStyle::Body;
 					let row_height = ui.text_style_height(&text_style);
 					let total_rows = 100;
-					ui.strong("Files in Source Folder");
+					ui.strong("Files in source folder");
 					egui::ScrollArea::vertical()
 						.max_height(120.0)
 						.max_width(200.0)
@@ -128,6 +128,7 @@ impl eframe::App for FfGuiApp {
 							ui.selectable_value(&mut q, Quality::High, "High");
 							ui.selectable_value(&mut q, Quality::Medium, "Medium");
 							ui.selectable_value(&mut q, Quality::Low, "Low");
+							ui.selectable_value(&mut q, Quality::Broken, "Broken");
 						}
 					);
 					if self.quality != q { self.quality = q; }
@@ -138,7 +139,7 @@ impl eframe::App for FfGuiApp {
 				if ui.button("Go!").clicked() {
 					if self.source_file_picked {
 						match self.command {
-							CommandType::ToMp3  => { to_mp3(&path_string, self.quality); },
+							CommandType::ToMp3  => { to_mp3(&self.source_path, self.quality); },
 							CommandType::ToWav => {},
 							CommandType::ResizeVideo => {},
 							CommandType::CropVideo => {},
@@ -147,7 +148,7 @@ impl eframe::App for FfGuiApp {
 					else if self.source_directory_picked {
 						// TODO: iterate over paths in folder
 						match self.command {
-							CommandType::ToMp3  => { to_mp3(&path_string, self.quality); },
+							CommandType::ToMp3  => { to_mp3(&self.source_path, self.quality); },
 							CommandType::ToWav => {},
 							CommandType::ResizeVideo => {},
 							CommandType::CropVideo => {},
