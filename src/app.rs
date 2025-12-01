@@ -17,6 +17,7 @@ pub struct FfGuiApp {
 	source_file_picked: bool,
 	source_directory_picked: bool,
 	source_path: Option<PathBuf>,
+	source_paths: Vec<Option<PathBuf>>,
 
 	command: CommandType,
 	quality: Quality,
@@ -32,6 +33,7 @@ impl Default for FfGuiApp {
 			source_file_picked: false,
 			source_directory_picked: false,
 			source_path: None,
+			source_paths: Vec::new(),
 
 			command: CommandType::ToMp3,
 			quality: Quality::default(),
@@ -84,24 +86,30 @@ impl eframe::App for FfGuiApp {
 					ui.weak(format!("{}", path_string));
 				} else if self.source_directory_picked {
 					// TODO: collect file paths in folder
-					let paths = std::fs::read_dir(&path_string).unwrap();
+					let directory = std::fs::read_dir(&path_string).unwrap();
 					let mut total_rows = 0;
-					for path in paths {
-						// get strings into separate collection?
-					}
+					let mut path_strings = Vec::new();
+					for entry in directory {
+						let path = Some(entry.as_ref().expect("no valid path").path(), );
+						self.source_paths.push(path);
 
+						// get strings into separate collection?
+						let ps = entry.expect("no valid path").path().into_os_string().into_string().unwrap();
+						path_strings.push(ps);
+						total_rows = total_rows + 1;
+					}
 					
 					let text_style = egui::TextStyle::Body;
 					let row_height = ui.text_style_height(&text_style);
-					let total_rows = 100;
+					//let total_rows = 100;
 					ui.strong("Files in source folder");
 					egui::ScrollArea::vertical()
 						.max_height(120.0)
-						.max_width(200.0)
+						.max_width(800.0)
 						.scroll_bar_visibility(egui::scroll_area::ScrollBarVisibility::AlwaysVisible)
 						.show_rows(ui, row_height, total_rows, |ui, row_range| {
 							for n in row_range {
-								ui.label(format!("this_is_item_number_{}", n));
+								ui.label(path_strings[n].to_owned());
 							}
 						}
 					);
@@ -146,12 +154,14 @@ impl eframe::App for FfGuiApp {
 						}
 					}
 					else if self.source_directory_picked {
-						// TODO: iterate over paths in folder
-						match self.command {
-							CommandType::ToMp3  => { to_mp3(&self.source_path, self.quality); },
-							CommandType::ToWav => {},
-							CommandType::ResizeVideo => {},
-							CommandType::CropVideo => {},
+						let paths = self.source_paths.clone();
+						for path in paths {
+							match self.command {
+								CommandType::ToMp3  => { to_mp3(&path, self.quality); },
+								CommandType::ToWav => {},
+								CommandType::ResizeVideo => {},
+								CommandType::CropVideo => {},
+							}
 						}
 					}
 				}
