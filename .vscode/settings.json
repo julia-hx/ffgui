@@ -1,7 +1,3 @@
 {
-	"cSpell.words": [
-		"eframe",
-		"egui",
-		"ffgui"
-	]
+  "svelte.enable-ts-plugin": true
 }
