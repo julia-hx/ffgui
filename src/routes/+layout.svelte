@@ -5,13 +5,17 @@
 <link rel="stylesheet" href="/styles/shared.css">
 
 <div class="container">
-	<div class="row">
-		<nav>
-			<a href="/">home</a>
-			<a href="/about">about</a>
-		</nav>
-	</div>
+	<nav class="row">
+		<a href="/">home</a>
+		<a href="/about">about</a>
+	</nav>
 </div>
 
 
 {@render children()}
+
+<style>
+	#home-header{
+
+	}
+</style>

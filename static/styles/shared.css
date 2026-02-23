@@ -16,7 +16,7 @@
 
 .container {
 	margin: 0;
-	padding-top: 4vh;
+	padding-top: 2vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -28,6 +28,10 @@
 	justify-content: center;
 }
 
+.row > * {
+	margin-left: 8px;
+}
+
 a {
 	font-weight: 500;
 	color: #9A72C6;
@@ -35,7 +39,8 @@ a {
 }
 
 a:hover {
-	color: #f6f6f6;
+	color:#f0f0f0;
+	text-decoration-line: underline;
 }
 
 h1 {
@@ -46,7 +51,6 @@ input,
 button {
 	border-radius: 8px;
 	border: 1px solid transparent;
-	margin-left: 12px;
 	padding: 8px;
 	font-size: 1em;
 	font-weight: 500;
