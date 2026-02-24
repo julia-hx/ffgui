@@ -1,6 +1,8 @@
 {
 "svelte.enable-ts-plugin": true,
 "cSpell.words": [
-	"ffgui"
+	"drophint",
+	"ffgui",
+	"tauri"
 ]
 }

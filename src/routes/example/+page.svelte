@@ -51,10 +51,6 @@
 		<button type="submit">Greet</button>
 	</form>
 	<p>{greetMsg}</p>
-
-	<div class="row">
-		<a href="https://linktr.ee/julia.hx" target="_blank">julia.hx</a>
-	</div>
 </main>
 
 <style>

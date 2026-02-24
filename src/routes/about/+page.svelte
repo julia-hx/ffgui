@@ -13,7 +13,7 @@
 
 
 	<div class="row">
-		<p>made in Rust and JS with:</p>
+		<p>made in Rust, JS and HTML with:</p>
 	</div>
 
 	<div class="row">
@@ -37,6 +37,12 @@
 	<div class="row">
 		by <a href="https://linktr.ee/julia.hx" target="_blank">julia.hx</a>
 	</div>
+
+	<div class="row">
+		<a href="https://julia-hx.github.io/" target="_blank">
+			<img src="/hx_space_inverted.png" class="logo blog" alt="julia.hx blog" />
+		</a>
+	</div>
 </div>
 
 <style>
@@ -57,9 +63,17 @@
 		filter: drop-shadow(0 0 0.4em #24c8db);
 	}
 
+	.logo.blog:hover {
+		filter: drop-shadow(0 0 0.3em #f0f0f0)
+	}
+
 	.logo {
 		height: 3em;
 		padding: 1.5em;
+	}
+
+	.logo.blog {
+		height: 4em;
 	}
 
 	.inline-link {

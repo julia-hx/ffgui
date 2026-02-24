@@ -11,11 +11,4 @@
 	</nav>
 </div>
 
-
 {@render children()}
-
-<style>
-	#home-header{
-
-	}
-</style>

@@ -34,7 +34,7 @@
 
 a {
 	font-weight: 500;
-	color: #9A72C6;
+	color: #C093FF;
 	text-decoration: inherit;
 }
 
@@ -64,7 +64,7 @@ button {
 button {
 	cursor: pointer;
 	color: #f0f0f0;
-	background-color: #9A72C6;
+	background-color: #8C5DD9;
 }
 
 button:hover {
