@@ -43,9 +43,9 @@
 	-->
 
 	<div class="row">
-		<DropZone>
-
-		</DropZone>
+		<div id="dropzone-container">
+			<DropZone></DropZone>
+		</div>
 	</div>
 
 	<div class="row">
@@ -53,5 +53,14 @@
 	</div>
 </main>
 
-<styles src="/shared.css">
-</styles>
+<styles src="/shared.css"></styles>
+
+<style>
+	#dropzone-container {
+		height: 110px;
+		width: 300px;
+		margin-top: 10px;
+		display: flex;
+		justify-content: center;
+	}	
+</style>

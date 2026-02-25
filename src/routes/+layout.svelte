@@ -12,3 +12,12 @@
 </div>
 
 {@render children()}
+
+<style>
+	nav {
+		padding-left: 10px;
+		a {
+			margin-right: 8px;
+		}
+	}
+</style>

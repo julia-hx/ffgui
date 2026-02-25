@@ -4,22 +4,22 @@
 
 <style>
 	.dropzone {
-		height: 6em !important;
-		width: 18em !important;
+		display: block;
+		height: 90px;
+		width: 300px;
 		
 		outline: 2px;
 		outline-style: dashed;
 		outline-color: #9A72C6;
 
-		margin-top: 1em;
-		margin-bottom: 2em;
+		transition: background-color 0.25s;
 	}
 	.dropzone:hover {
 		background-color: #1f1f1f;
 	}
 	.drophint {
 		color: #4f4f4f;
-		margin-top: 34px;
+		margin-top: 33px;
 	}
 	.drophint:hover {
 		cursor: default;

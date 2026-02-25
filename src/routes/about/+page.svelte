@@ -35,7 +35,9 @@
 	</div>
 
 	<div class="row">
-		by <a href="https://linktr.ee/julia.hx" target="_blank">julia.hx</a>
+		<span> 
+			by <a href="https://linktr.ee/julia.hx" target="_blank">julia.hx</a>
+		</span>
 	</div>
 
 	<div class="row">
